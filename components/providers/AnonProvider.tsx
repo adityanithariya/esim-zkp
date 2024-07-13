@@ -1,10 +1,14 @@
 "use client";
 
 import { AnonAadhaarProvider } from "@anon-aadhaar/react";
-import React, { type ReactNode } from "react";
+import React, { useEffect, useState, type ReactNode } from "react";
 
 const AnonProvider = ({ children }: Readonly<{ children: ReactNode }>) => {
-	return <AnonAadhaarProvider>{children}</AnonAadhaarProvider>;
+	const [ready, setReady] = useState(false);
+	useEffect(() => {
+		setReady(true);
+	}, []);
+	return ready && <AnonAadhaarProvider>{children}</AnonAadhaarProvider>;
 };
 
 export default AnonProvider;

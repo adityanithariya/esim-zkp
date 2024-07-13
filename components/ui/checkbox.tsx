@@ -1,17 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 
-const Checkbox = () => {
-	const [checked, setChecked] = useState(true);
-	return checked ? (
-		<MdCheckBox className="size-6" onClick={() => setChecked(false)} />
+const Checkbox = ({ value }: { value?: boolean }) => {
+	return value ? (
+		<MdCheckBox className="size-6 cursor-pointer" />
 	) : (
-		<MdCheckBoxOutlineBlank
-			className="size-6"
-			onClick={() => setChecked(true)}
-		/>
+		<MdCheckBoxOutlineBlank className="size-6 cursor-pointer" />
 	);
 };
 

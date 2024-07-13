@@ -32,3 +32,43 @@ body {
 	}
 }
 
+.login-with-anon button {
+	width: 100%;
+	margin-top: 1.75rem;
+	padding-block: 0.625rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 0;
+	background-color: #0e76fd;
+	color: white;
+}
+
+.login-with-anon button:hover {
+	background-color: #0e76fdd0;
+}
+
+.login-with-anon button:disabled {
+	background-color: #0e76fdc0;
+	cursor: not-allowed;
+}
+
+@keyframes spin {
+	0% {
+		rotate: 0deg;
+	}
+	50% {
+		rotate: 180deg;
+	}
+	100% {
+		rotate: 360deg;
+	}
+}
+
+.loader {
+	border-radius: 50%;
+	border-top: 3px solid white;
+	width: 20px;
+	height: 20px;
+	animation: spin 1s linear infinite forwards;
+}

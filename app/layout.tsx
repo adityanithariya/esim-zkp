@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-// import AnonProvider from "@components/AnonProvider";
+import AnonProvider from "@components/AnonProvider";
 import WalletProvider from "@components/WalletProvider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,9 +20,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={inter.className}>
 				<WalletProvider>
-					{/* <AnonProvider> */}
-					{children}
-					{/* </AnonProvider> */}
+					<AnonProvider>{children}</AnonProvider>
 				</WalletProvider>
 			</body>
 		</html>
