@@ -18,6 +18,9 @@ const config: Config = {
       },
     },
     extend: {
+      width: {
+        card: "calc(100% - 2.5rem)"
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

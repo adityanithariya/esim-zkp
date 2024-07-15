@@ -53,7 +53,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	return isConnected ? (
 		<div className="flex flex-col">
 			{SIMs.length === 0 ? (
-				<div className="h-[40vh] bg-white/10 flex items-center gap-2 justify-center rounded-md w-[95%]">
+				<div className="h-[40vh] bg-white/10 flex items-center gap-2 justify-center rounded-md w-full text-sm">
 					Register eSIM to view here!
 				</div>
 			) : null}
@@ -179,7 +179,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	) : (
 		<button
 			type="button"
-			className="h-[50vh] bg-white/10 flex items-center gap-2 justify-center rounded-md w-[95%]"
+			className="h-[50vh] bg-white/10 flex items-center gap-2 justify-center rounded-md w-card"
 			onClick={openConnectModal}
 		>
 			<IoWalletOutline className="size-7" />
