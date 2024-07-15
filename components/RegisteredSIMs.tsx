@@ -10,25 +10,31 @@ import React, { useState } from "react";
 import type { eSIM } from "@type/index";
 import { formatPhoneNumber } from "@utils/index";
 import clsx from "clsx";
-import { Timestamp, deleteDoc, doc } from "firebase/firestore";
+import { Timestamp, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@components/ui/dialog";
 import Button from "./ui/button";
 import { toast } from "react-toastify";
 import { eSIMs } from "@firebase/config";
+import { useRouter } from "next/navigation";
 
 const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	const { address, isConnected } = useAccount();
 	const { openConnectModal } = useConnectModal();
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const router = useRouter();
 
 	console.log(SIMs);
+
+	const setActive = async (id: string, active: boolean) => {
+		await updateDoc(doc(eSIMs, id), { active });
+		router.refresh();
+	};
 
 	return isConnected ? (
 		<div className="flex flex-col">
@@ -55,6 +61,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 									<button
 										type="button"
 										className="hover:bg-white/15 p-1 rounded md:opacity-0 sm:opacity-100 opacity-100 group-hover:opacity-100"
+										onClick={() => setActive(SIM.id, false)}
 									>
 										<VscDebugDisconnect className="text-red-500 size-6" />
 									</button>
@@ -64,6 +71,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 									<button
 										type="button"
 										className="hover:bg-white/15 p-1 rounded md:opacity-0 sm:opacity-100 opacity-100 group-hover:opacity-100"
+										onClick={() => setActive(SIM.id, true)}
 									>
 										<PiPlugsConnectedThin className="text-green-500 size-6" />
 									</button>
@@ -86,7 +94,8 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 									<DialogHeader>
 										<DialogTitle>
 											Delete eSIM with phone number{" "}
-											{formatPhoneNumber(SIM.phoneNumber)}?
+											{formatPhoneNumber(SIM.phoneNumber)}
+											?
 										</DialogTitle>
 										<DialogDescription>
 											This action cannot be undone. This
@@ -97,7 +106,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 									</DialogHeader>
 									<div className="flex gap-2">
 										<Button
-                                        className="w-full"
+											className="w-full"
 											onClick={async () => {
 												await deleteDoc(
 													doc(eSIMs, SIM.id)
@@ -105,6 +114,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 												toast.success(
 													"eSIM deleted successfully"
 												);
+												router.refresh();
 											}}
 										>
 											Delete

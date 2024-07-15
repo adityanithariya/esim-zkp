@@ -1,12 +1,14 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React from "react";
-import AddeSIM from "@components/AddeSIM";
+import AddSIM from "@components/AddSIM";
 import { getDocs, query, where } from "firebase/firestore";
 import { eSIMs } from "@firebase/config";
 import RegisteredSIMs from "@components/RegisteredSIMs";
 import { getServerSession } from "next-auth";
 import type { eSIM } from "@type/index";
 import authOptions from "@config/auth";
+
+export const dynamic = "force-dynamic";
 
 const ESIM = async () => {
 	const generatePhoneNumbers = async () => {
@@ -50,7 +52,7 @@ const ESIM = async () => {
 						Registered eSIMs
 					</h1>
 					<RegisteredSIMs SIMs={SIMs} />
-					<AddeSIM phoneNumbers={phoneNumbers} />
+					<AddSIM phoneNumbers={phoneNumbers} />
 				</div>
 			</div>
 		</main>

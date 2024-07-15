@@ -25,7 +25,7 @@ import { toast } from "react-toastify";
 import { convertBigIntToByteArray } from "@anon-aadhaar/core";
 import { useRouter } from "next/navigation";
 
-const AddeSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
+const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 	const [open, setOpen] = useState(false);
 	const { address, isConnected } = useAccount();
 	const router = useRouter();
@@ -33,6 +33,44 @@ const AddeSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 	const [anonAadhaar, setAnonAadhaar] = useAnonAadhaar();
 	const [phoneNumber, setPhoneNumber] = useState<string>("");
 	const [isLoading, setIsLoading] = useState(false);
+
+	const registerESIM = async () => {
+		if (!phoneNumber) return toast.error("Select a phone number!");
+		if (anonAadhaar.status !== "logged-in")
+			return toast.error("Aadhaar verification needed!");
+		setIsLoading(true);
+		const data = JSON.parse(anonAadhaar.anonAadhaarProofs[0].pcd);
+		console.log(data);
+		const age: Record<string, boolean> = {
+			"1": true,
+			"0": false,
+		};
+		if (!age[data.proof.ageAbove18])
+			return toast.error("Age must be above 18!");
+		await addDoc(eSIMs, {
+			phoneNumber,
+			address,
+			active: false,
+			gender: String.fromCharCode(data.proof.gender),
+			state: convertBigIntToByteArray(BigInt(data.proof.state))
+				.toString()
+				.split(",")
+				.map((i) => String.fromCharCode(Number(i)))
+				.reverse()
+				.join(""),
+			pincode: data.proof.pincode,
+			// proof: data?.proof,
+			createdAt: Timestamp.now(),
+			updatedAt: Timestamp.now(),
+		});
+		setIsLoading(false);
+		setOpen(false);
+		toast.success("eSIM Registered!");
+		setTimeout(() => {
+			toast.info("Activate eSIM to start using it!");
+		}, 1000);
+		router.refresh();
+	};
 	return (
 		<React.Fragment>
 			{isConnected && (
@@ -83,8 +121,8 @@ const AddeSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 							) : (
 								<LogInWithAnonAadhaar
 									useTestAadhaar={testMode}
-									nullifierSeed={Math.floor(
-										Math.random() * 1983248
+									nullifierSeed={Number(
+										process.env.NULLIFIER_SEED || 0
 									)}
 									fieldsToReveal={[
 										"revealAgeAbove18",
@@ -96,62 +134,7 @@ const AddeSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 								/>
 							)}
 						</div>
-						<Button
-							onClick={async () => {
-								if (!phoneNumber)
-									return toast.error(
-										"Select a phone number!"
-									);
-								if (anonAadhaar.status !== "logged-in")
-									return toast.error(
-										"Aadhaar verification needed!"
-									);
-								setIsLoading(true);
-								const data = JSON.parse(
-									anonAadhaar.anonAadhaarProofs[0].pcd
-								);
-								console.log(data);
-								const age: Record<string, boolean> = {
-									"1": true,
-									"0": false,
-								};
-								if (!age[data.proof.ageAbove18])
-									return toast.error("Age must be above 18!");
-								await addDoc(eSIMs, {
-									phoneNumber,
-									address,
-									active: false,
-									gender: String.fromCharCode(
-										data.proof.gender
-									),
-									state: convertBigIntToByteArray(
-										BigInt(data.proof.state)
-									)
-										.toString()
-										.split(",")
-										.map((i) =>
-											String.fromCharCode(Number(i))
-										)
-										.reverse()
-										.join(""),
-									pincode: data.proof.pincode,
-									// proof: data?.proof,
-									createdAt: Timestamp.now(),
-									updatedAt: Timestamp.now(),
-								});
-								setIsLoading(false);
-								setOpen(false);
-								toast.success("eSIM Registered!");
-								setTimeout(() => {
-									toast.info(
-										"Activate eSIM to start using it!"
-									);
-								}, 1000);
-								router.refresh();
-							}}
-						>
-							Activate eSIM
-						</Button>
+						<Button onClick={registerESIM}>Register eSIM</Button>
 					</div>
 				</DialogContent>
 			</Dialog>
@@ -159,4 +142,4 @@ const AddeSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 	);
 };
 
-export default AddeSIM;
+export default AddSIM;
