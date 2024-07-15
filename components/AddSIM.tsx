@@ -134,7 +134,13 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 								/>
 							)}
 						</div>
-						<Button onClick={registerESIM}>Register eSIM</Button>
+						<Button onClick={registerESIM} disabled={isLoading}>
+							{isLoading ? (
+								<div className="loader" />
+							) : (
+								"Register eSIM"
+							)}
+						</Button>
 					</div>
 				</DialogContent>
 			</Dialog>

@@ -6,7 +6,7 @@ import { VscDebugDisconnect } from "react-icons/vsc";
 import { AiOutlineDelete } from "react-icons/ai";
 import { PiPlugsConnectedThin } from "react-icons/pi";
 import { useAccount } from "wagmi";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { eSIM } from "@type/index";
 import { formatPhoneNumber } from "@utils/index";
 import clsx from "clsx";
@@ -22,22 +22,41 @@ import Button from "./ui/button";
 import { toast } from "react-toastify";
 import { eSIMs } from "@firebase/config";
 import { useRouter } from "next/navigation";
+import { watchAccount } from "@wagmi/core";
+import WagmiConfig from "@config/wagmi";
 
 const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
-	const { address, isConnected } = useAccount();
+	const { isConnected } = useAccount();
 	const { openConnectModal } = useConnectModal();
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 
 	console.log(SIMs);
 
 	const setActive = async (id: string, active: boolean) => {
+		setIsLoading(true);
 		await updateDoc(doc(eSIMs, id), { active });
 		router.refresh();
+		setIsLoading(false);
 	};
+
+	useEffect(() => {
+		const unwatch = watchAccount(WagmiConfig, {
+			onChange(account) {
+				if (account.isConnected) router.refresh();
+			},
+		});
+		return () => unwatch();
+	});
 
 	return isConnected ? (
 		<div className="flex flex-col">
+			{SIMs.length === 0 ? (
+				<div className="h-[40vh] bg-white/10 flex items-center gap-2 justify-center rounded-md w-[95%]">
+					Register eSIM to view here!
+				</div>
+			) : null}
 			{SIMs.map((SIM) => (
 				<div
 					key={SIM.id}
@@ -62,8 +81,13 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 										type="button"
 										className="hover:bg-white/15 p-1 rounded md:opacity-0 sm:opacity-100 opacity-100 group-hover:opacity-100"
 										onClick={() => setActive(SIM.id, false)}
+										disabled={isLoading}
 									>
-										<VscDebugDisconnect className="text-red-500 size-6" />
+										{isLoading ? (
+											<div className="loader" />
+										) : (
+											<VscDebugDisconnect className="text-red-500 size-6" />
+										)}
 									</button>
 								</abbr>
 							) : (
@@ -72,8 +96,13 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 										type="button"
 										className="hover:bg-white/15 p-1 rounded md:opacity-0 sm:opacity-100 opacity-100 group-hover:opacity-100"
 										onClick={() => setActive(SIM.id, true)}
+										disabled={isLoading}
 									>
-										<PiPlugsConnectedThin className="text-green-500 size-6" />
+										{isLoading ? (
+											<div className="loader" />
+										) : (
+											<PiPlugsConnectedThin className="text-green-500 size-6" />
+										)}
 									</button>
 								</abbr>
 							)}
@@ -119,7 +148,12 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 										>
 											Delete
 										</Button>
-										<Button className="!bg-transparent w-full">
+										<Button
+											className="!bg-transparent w-full"
+											onClick={() =>
+												setOpenDeleteDialog(false)
+											}
+										>
 											Cancel
 										</Button>
 									</div>
