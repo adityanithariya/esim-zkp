@@ -51,15 +51,21 @@ const Home = () => {
 	useEffect(() => {
 		if (anonAadhaar.status === "logged-in") {
 			const data = JSON.parse(anonAadhaar.anonAadhaarProofs[0].pcd);
+			console.log(data);
 			const age: Record<string, string> = {
 				"1": "Yes",
 				"0": "No",
 			};
 			const fields = [
 				data.proof.ageAbove18 && age[data.proof.ageAbove18],
-				data.proof.gender,
+				String.fromCharCode(data.proof.gender),
 				data.proof.pincode,
-				convertBigIntToByteArray(BigInt(data.proof.state)),
+				convertBigIntToByteArray(BigInt(data.proof.state))
+					.toString()
+					.split(",")
+					.map((i) => String.fromCharCode(Number(i)))
+					.reverse()
+					.join(""),
 			];
 			setRevealFields((revealFields) => [
 				...revealFields.map((field, index) => ({

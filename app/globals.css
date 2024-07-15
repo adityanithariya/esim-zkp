@@ -32,7 +32,7 @@ body {
 	}
 }
 
-.login-with-anon button {
+.login-with-anon > div > div > button {
 	width: 100%;
 	margin-top: 1.75rem;
 	padding-block: 0.625rem;
@@ -40,17 +40,38 @@ body {
 	align-items: center;
 	justify-content: center;
 	border-radius: 0;
-	background-color: #0e76fd;
+	background-color: #0e76fd !important;
 	color: white;
 }
 
-.login-with-anon button:hover {
-	background-color: #0e76fdd0;
+.login-with-anon > div > div > button:hover,
+.login-aadhaar-btn > div > div > button:hover,
+.login-aadhaar-btn > div > div > button:hover::after {
+	background-color: #0b60ce !important;
 }
 
-.login-with-anon button:disabled {
-	background-color: #0e76fdc0;
+.login-with-anon > div > div > button:disabled,
+.login-aadhaar-btn > div > div > button:disabled,
+.login-aadhaar-btn > div > div > button:disabled::after {
+	background-color: #0e76fdc0 !important;
 	cursor: not-allowed;
+}
+
+.login-aadhaar-btn > div > div > button {
+	width: 100%;
+	padding-block: 0.625rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #0e76fd;
+	color: white;
+	font-weight: 500;
+}
+
+.login-aadhaar-btn > div > div > button::after {
+	content: "Login With Aadhaar";
+	position: absolute;
+	background-color: inherit;
 }
 
 @keyframes spin {
@@ -72,3 +93,4 @@ body {
 	height: 20px;
 	animation: spin 1s linear infinite forwards;
 }
+
