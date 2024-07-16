@@ -170,7 +170,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 						</div>
 					</div>
 					<abbr
-						className="no-underline"
+						className="no-underline flex w-fit mb-2"
 						title={new Intl.DateTimeFormat("en-US", {
 							year: "numeric",
 							month: "short",
@@ -186,7 +186,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 							).toDate()
 						)}
 					>
-						<div className="text-white/45 text-xs pb-2">
+						<div className="text-white/45 text-xs">
 							{new Timestamp(
 								SIM.updatedAt.seconds,
 								SIM.updatedAt.nanoseconds
