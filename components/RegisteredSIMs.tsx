@@ -162,6 +162,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 						</div>
 					</div>
 					<abbr
+						className="no-underline"
 						title={new Intl.DateTimeFormat("en-US", {
 							year: "numeric",
 							month: "short",
