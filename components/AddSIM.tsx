@@ -59,6 +59,7 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 				.reverse()
 				.join(""),
 			pincode: data.proof.pincode,
+			nullifier: data.proof.nullifier,
 			// proof: data?.proof,
 			createdAt: Timestamp.now(),
 			updatedAt: Timestamp.now(),
@@ -134,7 +135,11 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 								/>
 							)}
 						</div>
-						<Button onClick={registerESIM} disabled={isLoading}>
+						<Button
+							onClick={registerESIM}
+							disabled={isLoading}
+							className="flex items-center justify-center"
+						>
 							{isLoading ? (
 								<div className="loader" />
 							) : (

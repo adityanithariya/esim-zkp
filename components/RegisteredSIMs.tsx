@@ -51,7 +51,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	});
 
 	return isConnected ? (
-		<div className="flex flex-col">
+		<div className="flex flex-col gap-2">
 			{SIMs.length === 0 ? (
 				<div className="h-[40vh] bg-white/10 flex items-center gap-2 justify-center rounded-md w-full text-sm">
 					Register eSIM to view here!
@@ -60,7 +60,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 			{SIMs.map((SIM) => (
 				<div
 					key={SIM.id}
-					className="bg-white/10 px-3 py-2 rounded-md group"
+					className="bg-white/10 border border-transparent hover:border-white/30 px-3 py-2 rounded-md group"
 				>
 					<div className="flex justify-between">
 						<div className="flex items-center gap-3">
@@ -76,7 +76,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 						</div>
 						<div className="flex sm:gap-3 gap-0">
 							{SIM.active ? (
-								<abbr title="Inactivate">
+								<abbr title="Deactivate">
 									<button
 										type="button"
 										className="hover:bg-white/15 p-1 rounded md:opacity-0 sm:opacity-100 opacity-100 group-hover:opacity-100"
@@ -149,7 +149,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 											Delete
 										</Button>
 										<Button
-											className="!bg-transparent w-full"
+											className="!bg-transparent hover:!bg-white/10 w-full"
 											onClick={() =>
 												setOpenDeleteDialog(false)
 											}
@@ -161,7 +161,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 							</Dialog>
 						</div>
 					</div>
-					<div className="text-white/45 text-xs">
+					<div className="text-white/45 text-xs pb-2">
 						{new Timestamp(
 							SIM.updatedAt.seconds,
 							SIM.updatedAt.nanoseconds
