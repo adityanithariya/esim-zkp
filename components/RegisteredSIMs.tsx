@@ -36,7 +36,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 
 	const setActive = async (id: string, active: boolean) => {
 		setIsLoading(true);
-		await updateDoc(doc(eSIMs, id), { active });
+		await updateDoc(doc(eSIMs, id), { active, updatedAt: Timestamp.now() });
 		router.refresh();
 		setIsLoading(false);
 	};
@@ -161,18 +161,35 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 							</Dialog>
 						</div>
 					</div>
-					<div className="text-white/45 text-xs pb-2">
-						{new Timestamp(
-							SIM.updatedAt.seconds,
-							SIM.updatedAt.nanoseconds
-						)
-							.toDate()
-							.toLocaleString("en-US", {
-								day: "2-digit",
-								month: "long",
-								year: "numeric",
-							})}
-					</div>
+					<abbr
+						title={new Intl.DateTimeFormat("en-US", {
+							year: "numeric",
+							month: "short",
+							day: "numeric",
+							hour: "numeric",
+							minute: "numeric",
+							timeZone: "Asia/Kolkata",
+							hour12: true,
+						}).format(
+							new Timestamp(
+								SIM.updatedAt.seconds,
+								SIM.updatedAt.nanoseconds
+							).toDate()
+						)}
+					>
+						<div className="text-white/45 text-xs pb-2">
+							{new Timestamp(
+								SIM.updatedAt.seconds,
+								SIM.updatedAt.nanoseconds
+							)
+								.toDate()
+								.toLocaleString("en-US", {
+									day: "2-digit",
+									month: "long",
+									year: "numeric",
+								})}
+						</div>
+					</abbr>
 				</div>
 			))}
 		</div>
