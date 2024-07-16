@@ -34,6 +34,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	const router = useRouter();
 	const { data } = useSession();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [deleteSIM, setDeleteSIM] = useState<eSIM | null>(null);
 
 	console.log(SIMs);
 
@@ -118,55 +119,14 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 								<button
 									type="button"
 									className="hover:bg-white/15 p-1 rounded md:opacity-0 sm:opacity-100 opacity-100 group-hover:opacity-100"
-									onClick={() => setOpenDeleteDialog(true)}
+									onClick={() => {
+										setDeleteSIM(SIM);
+										setOpenDeleteDialog(true);
+									}}
 								>
 									<AiOutlineDelete className="text-red-500 size-6" />
 								</button>
 							</abbr>
-							<Dialog
-								open={openDeleteDialog}
-								onOpenChange={setOpenDeleteDialog}
-							>
-								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>
-											Delete eSIM with phone number{" "}
-											{formatPhoneNumber(SIM.phoneNumber)}
-											?
-										</DialogTitle>
-										<DialogDescription>
-											This action cannot be undone. This
-											will permanently delete your eSIM
-											and remove your data from our
-											servers.
-										</DialogDescription>
-									</DialogHeader>
-									<div className="flex gap-2">
-										<Button
-											className="w-full"
-											onClick={async () => {
-												await deleteDoc(
-													doc(eSIMs, SIM.id)
-												);
-												toast.success(
-													"eSIM deleted successfully"
-												);
-												router.refresh();
-											}}
-										>
-											Delete
-										</Button>
-										<Button
-											className="!bg-transparent hover:!bg-white/10 w-full"
-											onClick={() =>
-												setOpenDeleteDialog(false)
-											}
-										>
-											Cancel
-										</Button>
-									</div>
-								</DialogContent>
-							</Dialog>
 						</div>
 					</div>
 					<abbr
@@ -201,6 +161,42 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 					</abbr>
 				</div>
 			))}
+			<Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>
+							Delete eSIM with phone number{" "}
+							{deleteSIM?.phoneNumber &&
+								formatPhoneNumber(deleteSIM.phoneNumber)}
+							?
+						</DialogTitle>
+						<DialogDescription>
+							This action cannot be undone. This will permanently
+							delete your eSIM and remove your data from our
+							servers.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="flex gap-2">
+						<Button
+							className="w-full"
+							onClick={async () => {
+								await deleteDoc(doc(eSIMs, deleteSIM?.id));
+								toast.success("eSIM deleted successfully");
+								setOpenDeleteDialog(false);
+								router.refresh();
+							}}
+						>
+							Delete
+						</Button>
+						<Button
+							className="!bg-transparent hover:!bg-white/10 w-full"
+							onClick={() => setOpenDeleteDialog(false)}
+						>
+							Cancel
+						</Button>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	) : (
 		<button
