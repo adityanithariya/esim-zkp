@@ -24,6 +24,7 @@ import { eSIMs } from "@firebase/config";
 import { useRouter } from "next/navigation";
 import { watchAccount } from "@wagmi/core";
 import WagmiConfig from "@config/wagmi";
+import { useSession } from "next-auth/react";
 
 const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	const { isConnected } = useAccount();
@@ -31,6 +32,8 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
+	const { data } = useSession();
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 	console.log(SIMs);
 
@@ -41,14 +44,19 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 		setIsLoading(false);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Router is updated at mount
+	useEffect(() => {
+		if (isAuthenticated && data?.address) router.refresh();
+	}, [isAuthenticated, data]);
+
 	useEffect(() => {
 		const unwatch = watchAccount(WagmiConfig, {
 			onChange(account) {
-				if (account.isConnected) router.refresh();
+				if (account.isConnected) setIsAuthenticated(true);
 			},
 		});
 		return () => unwatch();
-	});
+	}, []);
 
 	return isConnected ? (
 		<div className="flex flex-col gap-2">
