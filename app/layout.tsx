@@ -5,6 +5,7 @@ import AnonProvider from "@components/AnonProvider";
 import WalletProvider from "@components/WalletProvider";
 import { type Session, getServerSession } from "next-auth";
 import ToastProvider from "@components/ToastProvider";
+import authOptions from "@config/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const session = await getServerSession();
+	const session = await getServerSession(authOptions);
 	return (
 		<html lang="en">
 			<body className={inter.className}>
