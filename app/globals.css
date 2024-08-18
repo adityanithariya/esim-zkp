@@ -94,3 +94,15 @@ body {
 	animation: spin 1s linear infinite forwards;
 }
 
+.wallet-adapter-dropdown > .wallet-adapter-button {
+	background-color: #0e76fd;
+    padding: 0px 25px;
+    height: 2.75rem;
+    border-radius: 10px;
+}
+
+.wallet-adapter-dropdown >.wallet-adapter-button:hover {
+	background-color: #0b60ce;
+	scale: 105%;
+	transition: all 200ms;
+}

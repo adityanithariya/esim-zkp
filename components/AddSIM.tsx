@@ -24,10 +24,11 @@ import { eSIMs } from "@firebase/config";
 import { toast } from "react-toastify";
 import { convertBigIntToByteArray } from "@anon-aadhaar/core";
 import { useRouter } from "next/navigation";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 	const [open, setOpen] = useState(false);
-	const { address, isConnected } = useAccount();
+	const { publicKey, connected } = useWallet();
 	const router = useRouter();
 	const testMode = false;
 	const [anonAadhaar, setAnonAadhaar] = useAnonAadhaar();
@@ -49,7 +50,7 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 			return toast.error("Age must be above 18!");
 		await addDoc(eSIMs, {
 			phoneNumber,
-			address,
+			address: publicKey,
 			active: false,
 			gender: String.fromCharCode(data.proof.gender),
 			state: convertBigIntToByteArray(BigInt(data.proof.state))
@@ -74,11 +75,8 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 	};
 	return (
 		<React.Fragment>
-			{isConnected && (
-				<Button
-					className="px-16 py-2 mt-4"
-					onClick={() => setOpen(true)}
-				>
+			{connected && (
+				<Button className="px-16 py-2 mt-4" onClick={() => setOpen(true)}>
 					Add eSIM
 				</Button>
 			)}
@@ -86,24 +84,16 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Add eSIM</DialogTitle>
-						<DialogDescription>
-							Add new eSIM to your account
-						</DialogDescription>
+						<DialogDescription>Add new eSIM to your account</DialogDescription>
 					</DialogHeader>
 					<div className="flex flex-col gap-3">
-						<Select
-							value={phoneNumber}
-							onValueChange={setPhoneNumber}
-						>
+						<Select value={phoneNumber} onValueChange={setPhoneNumber}>
 							<SelectTrigger className="w-full">
 								<SelectValue placeholder="Select Phone Number" />
 							</SelectTrigger>
 							<SelectContent>
 								{phoneNumbers.map((phoneNumber) => (
-									<SelectItem
-										key={phoneNumber}
-										value={phoneNumber}
-									>
+									<SelectItem key={phoneNumber} value={phoneNumber}>
 										{formatPhoneNumber(phoneNumber)}
 									</SelectItem>
 								))}
@@ -113,25 +103,20 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 							{anonAadhaar.status === "logged-in" ? (
 								<Button
 									className="w-full"
-									onClick={() =>
-										setAnonAadhaar({ type: "logout" })
-									}
+									onClick={() => setAnonAadhaar({ type: "logout" })}
 								>
 									Logout
 								</Button>
 							) : (
 								<LogInWithAnonAadhaar
-									useTestAadhaar={testMode}
-									nullifierSeed={Number(
-										process.env.NULLIFIER_SEED || 0
-									)}
+									nullifierSeed={Number(process.env.NULLIFIER_SEED || 0)}
 									fieldsToReveal={[
 										"revealAgeAbove18",
 										"revealGender",
 										"revealPinCode",
 										"revealState",
 									]}
-									signal={address as string}
+									signal={publicKey?.toBase58() as string}
 								/>
 							)}
 						</div>
@@ -140,11 +125,7 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 							disabled={isLoading}
 							className="flex items-center justify-center"
 						>
-							{isLoading ? (
-								<div className="loader" />
-							) : (
-								"Register eSIM"
-							)}
+							{isLoading ? <div className="loader" /> : "Register eSIM"}
 						</Button>
 					</div>
 				</DialogContent>

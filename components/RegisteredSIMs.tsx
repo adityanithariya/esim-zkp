@@ -23,11 +23,11 @@ import { toast } from "react-toastify";
 import { eSIMs } from "@firebase/config";
 import { useRouter } from "next/navigation";
 import { watchAccount } from "@wagmi/core";
-import WagmiConfig from "@config/wagmi";
 import { useSession } from "next-auth/react";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
-	const { isConnected } = useAccount();
+	// const { isConnected } = useAccount();
 	const { openConnectModal } = useConnectModal();
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -50,16 +50,17 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 		if (isAuthenticated && data?.address) router.refresh();
 	}, [isAuthenticated, data]);
 
-	useEffect(() => {
-		const unwatch = watchAccount(WagmiConfig, {
-			onChange(account) {
-				if (account.isConnected) setIsAuthenticated(true);
-			},
-		});
-		return () => unwatch();
-	}, []);
+	// useEffect(() => {
+	// 	const unwatch = watchAccount(WagmiConfig, {
+	// 		onChange(account) {
+	// 			if (account.isConnected) setIsAuthenticated(true);
+	// 		},
+	// 	});
+	// 	return () => unwatch();
+	// }, []);
+	const { connected } = useWallet();
 
-	return isConnected ? (
+	return connected ? (
 		<div className="flex flex-col gap-2">
 			{SIMs.length === 0 ? (
 				<div className="h-[40vh] bg-white/10 flex items-center gap-2 justify-center rounded-md w-full text-sm">
@@ -77,7 +78,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 							<div
 								className={clsx(
 									"px-1 text-xs h-fit rounded",
-									SIM.active ? "bg-green-400" : "bg-red-400"
+									SIM.active ? "bg-green-400" : "bg-red-400",
 								)}
 							>
 								{SIM.active ? "Active" : "Inactive"}
@@ -142,15 +143,12 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 						}).format(
 							new Timestamp(
 								SIM.updatedAt.seconds,
-								SIM.updatedAt.nanoseconds
-							).toDate()
+								SIM.updatedAt.nanoseconds,
+							).toDate(),
 						)}
 					>
 						<div className="text-white/45 text-xs">
-							{new Timestamp(
-								SIM.updatedAt.seconds,
-								SIM.updatedAt.nanoseconds
-							)
+							{new Timestamp(SIM.updatedAt.seconds, SIM.updatedAt.nanoseconds)
 								.toDate()
 								.toLocaleString("en-US", {
 									day: "2-digit",
@@ -171,9 +169,8 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 							?
 						</DialogTitle>
 						<DialogDescription>
-							This action cannot be undone. This will permanently
-							delete your eSIM and remove your data from our
-							servers.
+							This action cannot be undone. This will permanently delete your
+							eSIM and remove your data from our servers.
 						</DialogDescription>
 					</DialogHeader>
 					<div className="flex gap-2">

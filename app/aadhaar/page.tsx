@@ -5,9 +5,9 @@ import Checkbox from "@components/ui/checkbox";
 import { Switch } from "@components/ui/switch";
 import { ConnectButton, useConnectModal } from "@rainbow-me/rainbowkit";
 import React, { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 import { type FieldKey, convertBigIntToByteArray } from "@anon-aadhaar/core";
 import clsx from "clsx";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export type RevealState = {
 	id: FieldKey;
@@ -18,7 +18,7 @@ export type RevealState = {
 };
 
 const Home = () => {
-	const { address, isConnected } = useAccount();
+	const { publicKey, connected } = useWallet();
 	const { openConnectModal } = useConnectModal();
 	const [anonAadhaar, anonAadharCall] = useAnonAadhaar();
 	const [testMode, setTestMode] = useState(true);
@@ -92,9 +92,7 @@ const Home = () => {
 								<Switch
 									id="mode"
 									checked={testMode}
-									onCheckedChange={(checked) =>
-										setTestMode(checked)
-									}
+									onCheckedChange={(checked) => setTestMode(checked)}
 								/>
 							</div>
 						)}
@@ -107,9 +105,7 @@ const Home = () => {
 										<div className="text-sm text-white/45 w-[40%]">
 											{field.title}:{" "}
 										</div>
-										<div className="text-white">
-											{field.data}
-										</div>
+										<div className="text-white">{field.data}</div>
 									</div>
 								)
 							) : (
@@ -132,36 +128,29 @@ const Home = () => {
 										"w-full border rounded-md px-3 py-2 flex items-center justify-start gap-3",
 										field.state
 											? "border-gray-500 text-white"
-											: "border-black text-white/45"
+											: "border-black text-white/45",
 									)}
 								>
 									<Checkbox value={field.state} />
 									<div>
 										{field.title}
 										{!field.optional && (
-											<span className="text-red-500 ml-0.5">
-												*
-											</span>
+											<span className="text-red-500 ml-0.5">*</span>
 										)}
 									</div>
 								</button>
-							)
+							),
 						)}
 					</div>
-					{isConnected ? (
+					{connected ? (
 						<div className="login-with-anon !p-0">
-							{["logged-out", "logging-in"].includes(
-								anonAadhaar.status
-							) && (
+							{["logged-out", "logging-in"].includes(anonAadhaar.status) && (
 								<LogInWithAnonAadhaar
-									useTestAadhaar={testMode}
-									nullifierSeed={Math.floor(
-										Math.random() * 1983248
-									)}
+									nullifierSeed={Math.floor(Math.random() * 1983248)}
 									fieldsToReveal={revealFields
 										.filter((field) => field.state)
 										.map((field) => field.id)}
-									signal={address}
+									signal={publicKey?.toBase58()}
 								/>
 							)}
 							{anonAadhaar.status === "logged-in" && (
