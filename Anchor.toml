@@ -8,11 +8,14 @@ seeds = true
 [programs.localnet]
 esim_zkp = "7szrUTgx4Ks3EkpC99uvyeaamccQbZ49dCwVmpvutYDt"
 
+[programs.devnet]
+esim_zkp = "7szrUTgx4Ks3EkpC99uvyeaamccQbZ49dCwVmpvutYDt"
+
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "Devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

@@ -58,32 +58,37 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 		if (!age[data.proof.ageAbove18])
 			return toast.error("Age must be above 18!");
 		const program = new Program<EsimZkp>(idl as EsimZkp);
-		const txId = await program.methods
-			.initialize(
-				phoneNumber,
-				data.proof.nullifier,
-				true,
-				Number(data.proof.gender),
-				Number(data.proof.pincode),
-				convertBigIntToByteArray(BigInt(data.proof.state))
-					.toString()
-					.split(",")
-					.map((i) => String.fromCharCode(Number(i)))
-					.reverse()
-					.join(""),
-			)
-			.accounts({ user: publicKey })
-			.rpc();
-		console.log("txId: ", txId);
-		await connection.confirmTransaction({
-			signature: txId,
-			...(await connection.getLatestBlockhash()),
-		});
-		setIsLoading(false);
-		setOpen(false);
-		toast.success("eSIM Registered!");
-		setTimeout(() => toast.info("Activate eSIM to start using it!"), 1000);
-		router.refresh();
+		try {
+			const txId = await program.methods
+				.initialize(
+					phoneNumber,
+					data.proof.nullifier,
+					true,
+					Number(data.proof.gender),
+					Number(data.proof.pincode),
+					convertBigIntToByteArray(BigInt(data.proof.state))
+						.toString()
+						.split(",")
+						.map((i) => String.fromCharCode(Number(i)))
+						.reverse()
+						.join(""),
+				)
+				.accounts({ user: publicKey })
+				.rpc();
+			console.log("txId: ", txId);
+			await connection.confirmTransaction({
+				signature: txId,
+				...(await connection.getLatestBlockhash()),
+			});
+			toast.success("eSIM Registered!");
+			setTimeout(() => toast.info("Activate eSIM to start using it!"), 1000);
+			router.refresh();
+		} catch (e) {
+			console.log(e);
+		} finally {
+			setOpen(false);
+			setIsLoading(false);
+		}
 	};
 	return (
 		<React.Fragment>

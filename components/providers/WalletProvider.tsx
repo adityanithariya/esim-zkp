@@ -1,13 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, type ReactNode } from "react";
-
-import {
-	SessionProvider,
-	getCsrfToken,
-	signIn,
-	useSession,
-} from "next-auth/react";
+import { SessionProvider, getCsrfToken, signIn } from "next-auth/react";
 import type { Session } from "next-auth";
 import "@rainbow-me/rainbowkit/styles.css";
 import { clusterApiUrl } from "@solana/web3.js";
@@ -24,19 +18,10 @@ import {
 import {
 	ConnectionProvider,
 	WalletProvider as SolanaWalletProvider,
-	useWallet,
 } from "@solana/wallet-adapter-react";
-import type {
-	SolanaSignInInput,
-	SolanaSignInOutput,
-} from "@solana/wallet-standard-features";
-// import {
-// 	createDefaultAuthorizationResultCache,
-// 	SolanaMobileWalletAdapter,
-// } from "@solana-mobile/wallet-adapter-mobile";
+import type { SolanaSignInInput } from "@solana/wallet-standard-features";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
-import { verifySignIn } from "@solana/wallet-standard-util";
 
 type Props = {
 	children: ReactNode;
@@ -45,15 +30,16 @@ type Props = {
 
 const WalletProvider = ({ children, session }: Props) => {
 	const network = WalletAdapterNetwork.Devnet;
-	// const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-	const endpoint = "http://localhost:8899";
+	const endpoint = useMemo(
+		() =>
+			process.env.NETWORK === "localnet"
+				? "http://localhost:8899"
+				: clusterApiUrl(network),
+		[network],
+	);
 
 	const wallets = useMemo(
 		() => [
-			// new SolanaMobileWalletAdapter({
-			// 	appIdentity: { name: "Solana Wallet Adapter App" },
-			// 	authorizationResultCache: createDefaultAuthorizationResultCache(),
-			// }),
 			new CoinbaseWalletAdapter(),
 			new PhantomWalletAdapter(),
 			new SolflareWalletAdapter({ network }),
