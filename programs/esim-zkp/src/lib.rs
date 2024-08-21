@@ -41,7 +41,7 @@ pub mod esim_zkp {
         Ok(())
     }
 
-    pub fn delete(_ctx: Context<Delete>, _address: String, phone_number: String) -> Result<()> {
+    pub fn delete(_ctx: Context<Delete>, phone_number: String) -> Result<()> {
         msg!("SIM with phone number {} deleted!", phone_number);
         Ok(())
     }

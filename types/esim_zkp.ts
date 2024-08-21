@@ -50,10 +50,6 @@ export type EsimZkp = {
       ],
       "args": [
         {
-          "name": "address",
-          "type": "string"
-        },
-        {
           "name": "phoneNumber",
           "type": "string"
         }

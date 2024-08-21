@@ -5,12 +5,11 @@ import { IoWalletOutline } from "react-icons/io5";
 import { VscDebugDisconnect } from "react-icons/vsc";
 import { AiOutlineDelete } from "react-icons/ai";
 import { PiPlugsConnectedThin } from "react-icons/pi";
-import { useAccount } from "wagmi";
 import React, { useEffect, useState } from "react";
 import type { eSIM } from "@type/index";
 import { formatPhoneNumber } from "@utils/index";
 import clsx from "clsx";
-import { Timestamp, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import {
 	Dialog,
 	DialogContent,
@@ -24,7 +23,7 @@ import { eSIMs } from "@firebase/config";
 import { useRouter } from "next/navigation";
 // import { watchAccount } from "@wagmi/core";
 import { useSession } from "next-auth/react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Program } from "@coral-xyz/anchor";
 import idl from "@idl/esim_zkp.json";
 import type { EsimZkp } from "@type/esim_zkp";
@@ -38,12 +37,27 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	const { data } = useSession();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [deleteSIM, setDeleteSIM] = useState<eSIM | null>(null);
+	const { connection } = useConnection();
+	const program = new Program<EsimZkp>(idl as EsimZkp);
 
-	const setActive = async (id: string, active: boolean) => {
+	const setActive = async (phoneNumber: string, status: boolean) => {
+		if (!publicKey) return;
 		setIsLoading(true);
-		await updateDoc(doc(eSIMs, id), { active, updatedAt: Timestamp.now() });
-		router.refresh();
-		setIsLoading(false);
+		try {
+			const txId = await program.methods
+				.setStatus(phoneNumber, status)
+				.accounts({ user: publicKey })
+				.rpc();
+			await connection.confirmTransaction({
+				signature: txId,
+				...(await connection.getLatestBlockhash()),
+			});
+			router.refresh();
+		} catch (e) {
+			console.log(e);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Router is updated at mount
@@ -55,7 +69,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 
 	useEffect(() => {
 		(async () => {
-			if (publicKey) router.refresh()
+			if (publicKey) router.refresh();
 		})();
 	}, [publicKey, router]);
 
@@ -99,7 +113,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 									<button
 										type="button"
 										className="hover:bg-white/15 p-1 rounded md:opacity-0 sm:opacity-100 opacity-100 group-hover:opacity-100"
-										onClick={() => setActive(SIM.id, false)}
+										onClick={() => setActive(SIM.phoneNumber, false)}
 										disabled={isLoading}
 									>
 										{isLoading ? (
@@ -114,7 +128,7 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 									<button
 										type="button"
 										className="hover:bg-white/15 p-1 rounded md:opacity-0 sm:opacity-100 opacity-100 group-hover:opacity-100"
-										onClick={() => setActive(SIM.id, true)}
+										onClick={() => setActive(SIM.phoneNumber, true)}
 										disabled={isLoading}
 									>
 										{isLoading ? (
@@ -179,10 +193,24 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 						<Button
 							className="w-full"
 							onClick={async () => {
-								await deleteDoc(doc(eSIMs, deleteSIM?.id));
-								toast.success("eSIM deleted successfully");
-								setOpenDeleteDialog(false);
-								router.refresh();
+								if (!deleteSIM || !publicKey) return;
+								try {
+									const txId = await program.methods
+										.delete(deleteSIM.phoneNumber)
+										.accounts({ user: publicKey })
+										.rpc();
+									await connection.confirmTransaction({
+										signature: txId,
+										...(await connection.getLatestBlockhash()),
+									});
+									toast.success("eSIM deleted successfully");
+									router.refresh();
+								} catch (e) {
+									console.log(e);
+								} finally {
+									setOpenDeleteDialog(false);
+								}
+								// await deleteDoc(doc(eSIMs, deleteSIM?.id));
 							}}
 						>
 							Delete

@@ -44,10 +44,6 @@
       ],
       "args": [
         {
-          "name": "_address",
-          "type": "string"
-        },
-        {
           "name": "phone_number",
           "type": "string"
         }
