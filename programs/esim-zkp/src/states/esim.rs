@@ -3,8 +3,7 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct ESIM {
-    #[max_len(128)]
-    pub address: String,
+    pub owner: Pubkey,
     #[max_len(13)]
     pub phone_number: String,
     #[max_len(80)]

@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
-mod states;
 mod instructions;
+mod states;
 use instructions::*;
 
 declare_id!("7szrUTgx4Ks3EkpC99uvyeaamccQbZ49dCwVmpvutYDt");
@@ -13,7 +13,6 @@ pub mod esim_zkp {
 
     pub fn initialize(
         ctx: Context<Initialize>,
-        address: String,
         phone_number: String,
         nullifier: String,
         active: bool,
@@ -22,7 +21,7 @@ pub mod esim_zkp {
         state: String,
     ) -> Result<()> {
         ctx.accounts.initialize(
-            address,
+            ctx.accounts.user.key(),
             phone_number,
             nullifier,
             active,
@@ -36,12 +35,7 @@ pub mod esim_zkp {
         Ok(())
     }
 
-    pub fn set_status(
-        ctx: Context<Status>,
-        _address: String,
-        phone_number: String,
-        status: bool,
-    ) -> Result<()> {
+    pub fn set_status(ctx: Context<Status>, phone_number: String, status: bool) -> Result<()> {
         ctx.accounts.set_status(status)?;
         msg!("Status set to {} for {}", status, phone_number);
         Ok(())

@@ -1,0 +1,230 @@
+{
+  "address": "7szrUTgx4Ks3EkpC99uvyeaamccQbZ49dCwVmpvutYDt",
+  "metadata": {
+    "name": "esim_zkp",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "delete",
+      "discriminator": [
+        165,
+        204,
+        60,
+        98,
+        134,
+        15,
+        83,
+        134
+      ],
+      "accounts": [
+        {
+          "name": "esim",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "phone_number"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "_address",
+          "type": "string"
+        },
+        {
+          "name": "phone_number",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "esim",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "phone_number"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "phone_number",
+          "type": "string"
+        },
+        {
+          "name": "nullifier",
+          "type": "string"
+        },
+        {
+          "name": "active",
+          "type": "bool"
+        },
+        {
+          "name": "gender",
+          "type": "u8"
+        },
+        {
+          "name": "pincode",
+          "type": "u32"
+        },
+        {
+          "name": "state",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "set_status",
+      "discriminator": [
+        181,
+        184,
+        224,
+        203,
+        193,
+        29,
+        177,
+        224
+      ],
+      "accounts": [
+        {
+          "name": "esim",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "phone_number"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "phone_number",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "bool"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ESIM",
+      "discriminator": [
+        3,
+        86,
+        114,
+        190,
+        87,
+        161,
+        6,
+        141
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "ESIM",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "phone_number",
+            "type": "string"
+          },
+          {
+            "name": "nullifier",
+            "type": "string"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          },
+          {
+            "name": "gender",
+            "type": "u8"
+          },
+          {
+            "name": "pincode",
+            "type": "u32"
+          },
+          {
+            "name": "state",
+            "type": "string"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

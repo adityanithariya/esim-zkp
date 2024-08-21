@@ -45,7 +45,9 @@ type Props = {
 
 const WalletProvider = ({ children, session }: Props) => {
 	const network = WalletAdapterNetwork.Devnet;
-	const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+	// const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+	const endpoint = "http://localhost:8899";
+
 	const wallets = useMemo(
 		() => [
 			// new SolanaMobileWalletAdapter({

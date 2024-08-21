@@ -7,7 +7,9 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"test": "anchor test --skip-lint && anchor clean"
+		"test": "anchor test --skip-lint && anchor clean",
+		"anchor:build": "anchor build && cp ./target/idl/esim_zkp.json ./idl/esim_zkp.json && cp ./target/types/esim_zkp.ts ./types/esim_zkp.ts",
+		"anchor:deploy": "yarn anchor:build && anchor deploy"
 	},
 	"dependencies": {
 		"@anon-aadhaar/react": "^2.1.1",

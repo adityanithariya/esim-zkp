@@ -22,9 +22,12 @@ import Button from "./ui/button";
 import { toast } from "react-toastify";
 import { eSIMs } from "@firebase/config";
 import { useRouter } from "next/navigation";
-import { watchAccount } from "@wagmi/core";
+// import { watchAccount } from "@wagmi/core";
 import { useSession } from "next-auth/react";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { Program } from "@coral-xyz/anchor";
+import idl from "@idl/esim_zkp.json";
+import type { EsimZkp } from "@type/esim_zkp";
 
 const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	// const { isConnected } = useAccount();
@@ -35,8 +38,6 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	const { data } = useSession();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [deleteSIM, setDeleteSIM] = useState<eSIM | null>(null);
-
-	console.log(SIMs);
 
 	const setActive = async (id: string, active: boolean) => {
 		setIsLoading(true);
@@ -49,6 +50,14 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 	useEffect(() => {
 		if (isAuthenticated && data?.address) router.refresh();
 	}, [isAuthenticated, data]);
+
+	const { publicKey } = useWallet();
+
+	useEffect(() => {
+		(async () => {
+			if (publicKey) router.refresh()
+		})();
+	}, [publicKey, router]);
 
 	// useEffect(() => {
 	// 	const unwatch = watchAccount(WagmiConfig, {
@@ -140,21 +149,14 @@ const RegisteredSIMs = ({ SIMs }: { SIMs: eSIM[] }) => {
 							minute: "numeric",
 							timeZone: "Asia/Kolkata",
 							hour12: true,
-						}).format(
-							new Timestamp(
-								SIM.updatedAt.seconds,
-								SIM.updatedAt.nanoseconds,
-							).toDate(),
-						)}
+						}).format(new Date(SIM.updatedAt))}
 					>
 						<div className="text-white/45 text-xs">
-							{new Timestamp(SIM.updatedAt.seconds, SIM.updatedAt.nanoseconds)
-								.toDate()
-								.toLocaleString("en-US", {
-									day: "2-digit",
-									month: "long",
-									year: "numeric",
-								})}
+							{new Date(SIM.updatedAt).toLocaleString("en-US", {
+								day: "2-digit",
+								month: "long",
+								year: "numeric",
+							})}
 						</div>
 					</abbr>
 				</div>

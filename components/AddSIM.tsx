@@ -16,26 +16,35 @@ import {
 	SelectValue,
 } from "@components/ui/select";
 import { formatPhoneNumber } from "@utils/index";
-import React, { useState } from "react";
-import { useAccount } from "wagmi";
+import React, { useEffect, useState } from "react";
 import Button from "./ui/button";
-import { Timestamp, addDoc, doc } from "firebase/firestore";
-import { eSIMs } from "@firebase/config";
 import { toast } from "react-toastify";
 import { convertBigIntToByteArray } from "@anon-aadhaar/core";
 import { useRouter } from "next/navigation";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import type { EsimZkp } from "@type/esim_zkp";
+import { Program } from "@coral-xyz/anchor";
+import idl from "@idl/esim_zkp.json";
+import { hash } from "@utils/utils";
 
 const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 	const [open, setOpen] = useState(false);
 	const { publicKey, connected } = useWallet();
+	const { connection } = useConnection();
 	const router = useRouter();
-	const testMode = false;
 	const [anonAadhaar, setAnonAadhaar] = useAnonAadhaar();
 	const [phoneNumber, setPhoneNumber] = useState<string>("");
 	const [isLoading, setIsLoading] = useState(false);
+	const [addrHash, setAddrHash] = useState<string>("");
+
+	useEffect(() => {
+		(async () => {
+			if (publicKey) setAddrHash(`0x${await hash(publicKey.toBase58())}`);
+		})();
+	}, [publicKey]);
 
 	const registerESIM = async () => {
+		if (!publicKey) return toast.error("Please connect wallet and try again!");
 		if (!phoneNumber) return toast.error("Select a phone number!");
 		if (anonAadhaar.status !== "logged-in")
 			return toast.error("Aadhaar verification needed!");
@@ -48,29 +57,32 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 		};
 		if (!age[data.proof.ageAbove18])
 			return toast.error("Age must be above 18!");
-		await addDoc(eSIMs, {
-			phoneNumber,
-			address: publicKey,
-			active: false,
-			gender: String.fromCharCode(data.proof.gender),
-			state: convertBigIntToByteArray(BigInt(data.proof.state))
-				.toString()
-				.split(",")
-				.map((i) => String.fromCharCode(Number(i)))
-				.reverse()
-				.join(""),
-			pincode: data.proof.pincode,
-			nullifier: data.proof.nullifier,
-			// proof: data?.proof,
-			createdAt: Timestamp.now(),
-			updatedAt: Timestamp.now(),
+		const program = new Program<EsimZkp>(idl as EsimZkp);
+		const txId = await program.methods
+			.initialize(
+				phoneNumber,
+				data.proof.nullifier,
+				true,
+				Number(data.proof.gender),
+				Number(data.proof.pincode),
+				convertBigIntToByteArray(BigInt(data.proof.state))
+					.toString()
+					.split(",")
+					.map((i) => String.fromCharCode(Number(i)))
+					.reverse()
+					.join(""),
+			)
+			.accounts({ user: publicKey })
+			.rpc();
+		console.log("txId: ", txId);
+		await connection.confirmTransaction({
+			signature: txId,
+			...(await connection.getLatestBlockhash()),
 		});
 		setIsLoading(false);
 		setOpen(false);
 		toast.success("eSIM Registered!");
-		setTimeout(() => {
-			toast.info("Activate eSIM to start using it!");
-		}, 1000);
+		setTimeout(() => toast.info("Activate eSIM to start using it!"), 1000);
 		router.refresh();
 	};
 	return (
@@ -116,7 +128,7 @@ const AddSIM = ({ phoneNumbers }: { phoneNumbers: string[] }) => {
 										"revealPinCode",
 										"revealState",
 									]}
-									signal={publicKey?.toBase58() as string}
+									signal={addrHash}
 								/>
 							)}
 						</div>

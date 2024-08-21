@@ -15,7 +15,6 @@ const ConnectWallet = () => {
 	const { connected } = useWallet();
 	const { data } = useSession();
 	useEffect(() => {
-		console.log("connected: ", connected);
 		if (connected === false && data?.address) signOut({ redirect: false });
 	}, [connected, data]);
 	return (
