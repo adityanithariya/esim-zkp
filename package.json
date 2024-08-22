@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
-		"build": "next build",
+		"build": "echo $ANCHOR_WALLET_KEY > ./config/id.json && next build",
 		"start": "next start",
 		"lint": "next lint",
 		"test": "anchor test --skip-lint && anchor clean",

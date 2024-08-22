@@ -1,16 +1,20 @@
 import React from "react";
 import AddSIM from "@components/AddSIM";
-import { getDocs, query, where } from "firebase/firestore";
-import { eSIMs } from "@firebase/config";
 import RegisteredSIMs from "@components/RegisteredSIMs";
 import { getServerSession } from "next-auth";
 import type { eSIM } from "@type/index";
 import authOptions from "@config/auth";
 import ConnectWallet from "@components/providers/ConnectWallet";
-import { AnchorProvider, Program, setProvider } from "@coral-xyz/anchor";
+import {
+	AnchorProvider,
+	Program,
+	type Wallet,
+	setProvider,
+} from "@coral-xyz/anchor";
 import idl from "@idl/esim_zkp.json";
 import type { EsimZkp } from "@type/esim_zkp";
 import { generatePhoneNumbers } from "@utils/utils";
+import { Connection, clusterApiUrl } from "@solana/web3.js";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +23,8 @@ const ESIM = async () => {
 	const session = await getServerSession(authOptions);
 	const SIMs: eSIM[] = [];
 	if (session?.address) {
-		setProvider(AnchorProvider.env());
+		const connection = new Connection(clusterApiUrl("devnet"));
+		setProvider(new AnchorProvider(connection, {} as Wallet));
 		const program = new Program<EsimZkp>(idl as EsimZkp);
 		const accounts = await program.account.esim.all([
 			{
