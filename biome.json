@@ -1,0 +1,49 @@
+{
+  "files": {
+    "ignore": ["CHANGELOG.md", "yarn.lock"]
+  },
+  "formatter": {
+    "ignore": ["**/.next/**", "**/dist/**", "**/public/**", "**/target/**"],
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "lineWidth": 80
+  },
+  "linter": {
+    "ignore": ["**/.next/**", "**/dist/**", "**/public/**"],
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noUnusedVariables": "error",
+        "useExhaustiveDependencies": "warn"
+      },
+      "performance": {
+        "noDelete": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off",
+        "useShorthandArrayType": "error"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noExplicitAny": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "asNeeded"
+    }
+  },
+  "organizeImports": {
+    "ignore": ["**/.next/**", "**/dist/**"],
+    "enabled": true
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  }
+}

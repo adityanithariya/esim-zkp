@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const ToastProvider = ({
-	children,
+  children,
 }: Readonly<{ children: React.ReactNode }>) => {
-	return (
-		<>
-			{children}
-			<ToastContainer />
-		</>
-	);
-};
+  return (
+    <>
+      {children}
+      <ToastContainer />
+    </>
+  )
+}
 
-export default ToastProvider;
+export default ToastProvider

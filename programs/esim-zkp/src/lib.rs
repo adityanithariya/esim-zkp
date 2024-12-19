@@ -4,7 +4,7 @@ mod instructions;
 mod states;
 use instructions::*;
 
-declare_id!("7szrUTgx4Ks3EkpC99uvyeaamccQbZ49dCwVmpvutYDt");
+declare_id!("L8gG66uXQa12Pa1MCgi1DKdMDxX4P3PLfzXV9ACmFQq");
 
 #[program]
 pub mod esim_zkp {

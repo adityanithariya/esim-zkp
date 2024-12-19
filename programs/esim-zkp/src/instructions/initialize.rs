@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, solana_program::clock::Clock};
 
 use crate::states::ESIM;
 
@@ -32,6 +32,8 @@ impl<'info> Initialize<'info> {
         self.esim.pincode = pincode;
         self.esim.state = state;
         self.esim.bump = bumps.esim;
+        let clock = Clock::get()?;
+        self.esim.updated_at = clock.unix_timestamp;
         Ok(())
     }
 }

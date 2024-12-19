@@ -3,106 +3,106 @@
 @tailwind utilities;
 
 :root {
-	--foreground-rgb: 0, 0, 0;
-	--background-start-rgb: 214, 219, 220;
-	--background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
-	:root {
-		--foreground-rgb: 255, 255, 255;
-		--background-start-rgb: 0, 0, 0;
-		--background-end-rgb: 0, 0, 0;
-	}
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
 }
 
 body {
-	color: rgb(var(--foreground-rgb));
-	background: linear-gradient(
-			to bottom,
-			transparent,
-			rgb(var(--background-end-rgb))
-		)
-		rgb(var(--background-start-rgb));
+  color: rgb(var(--foreground-rgb)) !important;
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
 }
 
 @layer utilities {
-	.text-balance {
-		text-wrap: balance;
-	}
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
 .login-with-anon > div > div > button {
-	width: 100%;
-	margin-top: 1.75rem;
-	padding-block: 0.625rem;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 0;
-	background-color: #0e76fd !important;
-	color: white;
+  width: 100%;
+  margin-top: 1.75rem;
+  padding-block: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  background-color: #0e76fd !important;
+  color: white;
 }
 
 .login-with-anon > div > div > button:hover,
 .login-aadhaar-btn > div > div > button:hover,
 .login-aadhaar-btn > div > div > button:hover::after {
-	background-color: #0b60ce !important;
+  background-color: #0b60ce !important;
 }
 
 .login-with-anon > div > div > button:disabled,
 .login-aadhaar-btn > div > div > button:disabled,
 .login-aadhaar-btn > div > div > button:disabled::after {
-	background-color: #0e76fdc0 !important;
-	cursor: not-allowed;
+  background-color: #0e76fdc0 !important;
+  cursor: not-allowed;
 }
 
 .login-aadhaar-btn > div > div > button {
-	width: 100%;
-	padding-block: 0.625rem;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: #0e76fd;
-	color: white;
-	font-weight: 500;
+  width: 100%;
+  padding-block: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0e76fd;
+  color: white;
+  font-weight: 500;
 }
 
 .login-aadhaar-btn > div > div > button::after {
-	content: "Login With Aadhaar";
-	position: absolute;
-	background-color: inherit;
+  content: "Login With Aadhaar";
+  position: absolute;
+  background-color: inherit;
 }
 
 @keyframes spin {
-	0% {
-		rotate: 0deg;
-	}
-	50% {
-		rotate: 180deg;
-	}
-	100% {
-		rotate: 360deg;
-	}
+  0% {
+    rotate: 0deg;
+  }
+  50% {
+    rotate: 180deg;
+  }
+  100% {
+    rotate: 360deg;
+  }
 }
 
 .loader {
-	border-radius: 50%;
-	border-top: 3px solid white;
-	width: 20px;
-	height: 20px;
-	animation: spin 1s linear infinite forwards;
+  border-radius: 50%;
+  border-top: 3px solid white;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite forwards;
 }
 
 .wallet-adapter-dropdown > .wallet-adapter-button {
-	background-color: #0e76fd;
-    padding: 0px 25px;
-    height: 2.75rem;
-    border-radius: 10px;
+  background-color: #0e76fd;
+  padding: 0px 25px;
+  height: 2.75rem;
+  border-radius: 10px;
 }
 
-.wallet-adapter-dropdown >.wallet-adapter-button:hover {
-	background-color: #0b60ce;
-	scale: 105%;
-	transition: all 200ms;
+.wallet-adapter-dropdown > .wallet-adapter-button:hover {
+  background-color: #0b60ce;
+  scale: 105%;
+  transition: all 200ms;
 }

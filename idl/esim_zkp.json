@@ -1,5 +1,5 @@
 {
-  "address": "7szrUTgx4Ks3EkpC99uvyeaamccQbZ49dCwVmpvutYDt",
+  "address": "L8gG66uXQa12Pa1MCgi1DKdMDxX4P3PLfzXV9ACmFQq",
   "metadata": {
     "name": "esim_zkp",
     "version": "0.1.0",
@@ -9,16 +9,7 @@
   "instructions": [
     {
       "name": "delete",
-      "discriminator": [
-        165,
-        204,
-        60,
-        98,
-        134,
-        15,
-        83,
-        134
-      ],
+      "discriminator": [165, 204, 60, 98, 134, 15, 83, 134],
       "accounts": [
         {
           "name": "esim",
@@ -51,16 +42,7 @@
     },
     {
       "name": "initialize",
-      "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
-      ],
+      "discriminator": [175, 175, 109, 31, 13, 152, 155, 237],
       "accounts": [
         {
           "name": "esim",
@@ -117,16 +99,7 @@
     },
     {
       "name": "set_status",
-      "discriminator": [
-        181,
-        184,
-        224,
-        203,
-        193,
-        29,
-        177,
-        224
-      ],
+      "discriminator": [181, 184, 224, 203, 193, 29, 177, 224],
       "accounts": [
         {
           "name": "esim",
@@ -165,16 +138,7 @@
   "accounts": [
     {
       "name": "ESIM",
-      "discriminator": [
-        3,
-        86,
-        114,
-        190,
-        87,
-        161,
-        6,
-        141
-      ]
+      "discriminator": [3, 86, 114, 190, 87, 161, 6, 141]
     }
   ],
   "types": [

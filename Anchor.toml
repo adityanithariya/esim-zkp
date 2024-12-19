@@ -6,10 +6,10 @@ skip-lint = false
 seeds = true
 
 [programs.localnet]
-esim_zkp = "7szrUTgx4Ks3EkpC99uvyeaamccQbZ49dCwVmpvutYDt"
+esim_zkp = "L8gG66uXQa12Pa1MCgi1DKdMDxX4P3PLfzXV9ACmFQq"
 
 [programs.devnet]
-esim_zkp = "7szrUTgx4Ks3EkpC99uvyeaamccQbZ49dCwVmpvutYDt"
+esim_zkp = "L8gG66uXQa12Pa1MCgi1DKdMDxX4P3PLfzXV9ACmFQq"
 
 [registry]
 url = "https://api.apr.dev"
